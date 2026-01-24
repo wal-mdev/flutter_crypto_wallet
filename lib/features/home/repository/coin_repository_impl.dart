@@ -1,4 +1,5 @@
-import 'package:flutter_crypto_wallet/core/model/coin.dart';
+import 'package:flutter_crypto_wallet/core/model/coin_model.dart';
+import 'package:flutter_crypto_wallet/core/result.dart';
 import 'package:flutter_crypto_wallet/features/home/repository/coin_repository.dart';
 import 'package:flutter_crypto_wallet/features/home/service/coin_service.dart';
 
@@ -9,7 +10,7 @@ class CoinRepositoryImpl implements CoinRepository {
     : _coinService = coinService;
 
   @override
-  Future<List<Coin>> searchCoins(String query) {
+  Future<Result<List<CoinModel>, Exception>> searchCoins(String query) {
     return _coinService.searchCoins(query);
   }
 }
