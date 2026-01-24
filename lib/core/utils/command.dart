@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/result.dart';
+import 'package:flutter_crypto_wallet/core/utils/result.dart';
 
 abstract class Command<TSuccess, TError> extends ChangeNotifier {
   Command();
