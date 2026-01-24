@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_crypto_wallet/core/di/injection.dart';
 import 'package:flutter_crypto_wallet/core/router/app_router.dart';
 
 void main() {
+  initInjection();
   runApp(const CryptoWalletApp());
 }
 
