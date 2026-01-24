@@ -14,10 +14,5 @@ abstract final class ShellRouterList {
       routerIcon: Icons.favorite,
       routerPath: Routes.favorites,
     ),
-    ShellRouterModel(
-      routerTitle: 'Detalhes',
-      routerIcon: Icons.menu,
-      routerPath: Routes.details,
-    ),
   ];
 }
