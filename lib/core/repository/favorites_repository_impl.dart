@@ -1,19 +1,19 @@
-import 'package:flutter_crypto_wallet/core/model/coin.dart';
+import 'package:flutter_crypto_wallet/core/model/coin_model.dart';
 import 'package:flutter_crypto_wallet/core/repository/favorites_repository.dart';
 
 class FavoritesRepositoryImpl implements FavoritesRepository {
   @override
-  Future<List<Coin>> getFavorites() {
+  Future<List<CoinModel>> getFavorites() {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> addFavorite(Coin coin) {
+  Future<void> addFavorite(CoinModel coin) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> removeFavorite(Coin coin) {
+  Future<void> removeFavorite(CoinModel coin) {
     throw UnimplementedError();
   }
 }
