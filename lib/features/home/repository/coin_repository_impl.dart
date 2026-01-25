@@ -10,7 +10,12 @@ class CoinRepositoryImpl implements CoinRepository {
     : _coinService = coinService;
 
   @override
-  Future<Result<List<CoinModel>, Exception>> searchCoins(String query) {
-    return _coinService.searchCoins(query);
+  Future<Result<List<CoinModel>, Exception>> searchCoins(String query) async {
+    try {
+      final result = await _coinService.searchCoins(query);
+      return Success(result);
+    } catch (e) {
+      return Error(Exception('Falha no repositório ao buscar moedas: $e'));
+    }
   }
 }

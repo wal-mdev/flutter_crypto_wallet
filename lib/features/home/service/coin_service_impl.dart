@@ -1,5 +1,4 @@
 import 'package:flutter_crypto_wallet/core/model/coin_model.dart';
-import 'package:flutter_crypto_wallet/core/utils/result.dart';
 import 'package:flutter_crypto_wallet/features/home/service/coin_service.dart';
 
 class CoinServiceImpl implements CoinService {
@@ -35,13 +34,13 @@ class CoinServiceImpl implements CoinService {
   ];
 
   @override
-  Future<Result<List<CoinModel>, Exception>> searchCoins(String query) async {
-    if (query.isEmpty) return Success([]);
+  Future<List<CoinModel>> searchCoins(String query) async {
+    if (query.isEmpty) return [];
 
     await Future.delayed(const Duration(milliseconds: 500));
 
     try {
-      final results = _mockCoins.where((coin) {
+      return _mockCoins.where((coin) {
         final nameMatches = coin.name.toLowerCase().contains(
           query.toLowerCase(),
         );
@@ -50,10 +49,8 @@ class CoinServiceImpl implements CoinService {
         );
         return nameMatches || symbolMatches;
       }).toList();
-
-      return Success(results);
     } catch (e) {
-      return Error(Exception('Erro ao buscar moedas: $e'));
+      throw Exception('Erro ao buscar moedas: $e');
     }
   }
 }
