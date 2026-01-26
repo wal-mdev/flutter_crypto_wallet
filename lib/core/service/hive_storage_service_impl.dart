@@ -1,7 +1,7 @@
 import 'package:flutter_crypto_wallet/core/service/storage_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class HiveStorageService implements StorageService {
+class HiveStorageServiceImpl implements StorageService {
   @override
   Future<void> init() async {
     await Hive.initFlutter();
