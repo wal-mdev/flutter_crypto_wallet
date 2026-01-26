@@ -20,10 +20,6 @@ class CoinListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (coins.isEmpty) {
-      return const Center(child: Text('Nenhuma moeda encontrada'));
-    }
-
     return ListView.separated(
       padding: padding,
       itemCount: coins.length,

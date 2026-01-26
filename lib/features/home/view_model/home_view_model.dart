@@ -118,6 +118,14 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearSearch() {
+    _searchQuery = '';
+    _debounce?.cancel();
+    searchCommand.clearResult();
+    loadCoinsCommand.execute(false);
+    notifyListeners();
+  }
+
   void toggleFavorite(BuildContext context, CoinMarketModel coin) {
     if (isFavorite(coin)) {
       RemoveFavoriteBottomSheetWidget.show(

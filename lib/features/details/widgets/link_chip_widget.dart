@@ -16,20 +16,13 @@ class LinkChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<DetailsViewModel>();
     return Container(
       margin: const EdgeInsets.only(right: 8),
       child: ActionChip(
         avatar: Icon(icon, size: 16),
         label: Text(label, style: const TextStyle(fontSize: 12)),
-        onPressed: () async {
-          final viewModel = context.read<DetailsViewModel>();
-          final success = await viewModel.openExternalLink(url);
-          if (!success && context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Não foi possível abrir o link')),
-            );
-          }
-        },
+        onPressed: () => viewModel.openLink(context, url),
       ),
     );
   }

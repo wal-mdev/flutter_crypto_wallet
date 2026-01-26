@@ -41,6 +41,14 @@ class DetailsViewModel extends ChangeNotifier {
 
   static const periods = {'1': '24h', '7': '7d', '14': '14d', '30': '30d'};
 
+  static const descriptionEmpty =
+      'Nenhuma descrição disponível para esta criptomoeda.';
+
+  static const descriptionHtmlTagsRegex = r'<[^>]*>|&[^;]+;';
+
+  static const descriptionMultipleSpacesRegex = r'\s+';
+  static const errorOpenLink = 'Não foi possível abrir o link';
+
   String _selectedPeriod = '7';
 
   String get selectedPeriod => _selectedPeriod;
@@ -84,20 +92,19 @@ class DetailsViewModel extends ChangeNotifier {
 
   String cleanDescription(String description) {
     if (description.isEmpty) {
-      return 'Nenhuma descrição disponível para esta criptomoeda.';
+      return descriptionEmpty;
     }
 
-    // Improved regex to remove HTML tags and entities more thoroughly
+    // Regex to remove HTML tags and entities more thoroughly
+    // Replace tags/entities with space
+    // Collapse multiple spaces/newlines
     final cleaned = description
-        .replaceAll(
-          RegExp(r'<[^>]*>|&[^;]+;'),
-          ' ',
-        ) // Replace tags/entities with space
-        .replaceAll(RegExp(r'\s+'), ' ') // Collapse multiple spaces/newlines
+        .replaceAll(RegExp(descriptionHtmlTagsRegex), ' ')
+        .replaceAll(RegExp(descriptionMultipleSpacesRegex), ' ')
         .trim();
 
     if (cleaned.isEmpty) {
-      return 'Nenhuma descrição disponível para esta criptomoeda.';
+      return descriptionEmpty;
     }
 
     return cleaned;
@@ -115,6 +122,15 @@ class DetailsViewModel extends ChangeNotifier {
       return await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
     return false;
+  }
+
+  void openLink(BuildContext context, String url) async {
+    final success = await openExternalLink(url);
+    if (!success && context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text(errorOpenLink)));
+    }
   }
 
   @override

@@ -81,8 +81,7 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _searchController.clear();
-                      viewModel.onSearchChanged('');
-                      viewModel.loadCoinsCommand.execute(false);
+                      viewModel.clearSearch();
                     },
                   ),
               ],

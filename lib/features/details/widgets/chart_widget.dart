@@ -17,17 +17,7 @@ class ChartWidget extends StatelessWidget {
         command: viewModel.loadChartCommand,
         initialBuilder: (_) => const Center(child: CircularProgressIndicator()),
         successBuilder: (context, prices) {
-          if (prices.isEmpty) {
-            return const Center(
-              child: Text(
-                'Sem dados históricos',
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-
           final spots = viewModel.getChartSpots(prices);
-
           return LineChart(
             LineChartData(
               gridData: const FlGridData(show: false),
