@@ -41,6 +41,8 @@ class _HomeViewState extends State<HomeView> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
+        shadowColor: Colors.black.withValues(alpha: 0.5),
         title: const Text('BrasilCard Cripto'),
         actions: [
           Padding(

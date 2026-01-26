@@ -19,6 +19,8 @@ class DetailsView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
+        shadowColor: Colors.black.withValues(alpha: 0.5),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),

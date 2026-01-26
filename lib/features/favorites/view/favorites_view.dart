@@ -20,7 +20,11 @@ class _FavoritesViewState extends State<FavoritesView> {
     final viewModel = context.watch<FavoritesViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Meus Favoritos')),
+      appBar: AppBar(
+        elevation: 2,
+        shadowColor: Colors.black.withValues(alpha: 0.5),
+        title: const Text('Meus Favoritos'),
+      ),
       body: CommandBuilderWidget<List<CoinMarketModel>, Exception>(
         command: viewModel.favoritesProvider.loadCommand,
         emptyBuilder: (_) =>
