@@ -8,6 +8,8 @@ class PeriodSelectorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: DetailsViewModel.periods.entries.map((entry) {
@@ -18,7 +20,7 @@ class PeriodSelectorWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
-                  ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
+                  ? colorScheme.primaryContainer
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
@@ -26,8 +28,8 @@ class PeriodSelectorWidget extends StatelessWidget {
               entry.value,
               style: TextStyle(
                 color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
+                    ? colorScheme.onPrimaryContainer
+                    : colorScheme.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

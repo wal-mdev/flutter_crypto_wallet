@@ -51,7 +51,14 @@ class _SplashViewState extends State<SplashView>
           opacity: _animation,
           child: ScaleTransition(
             scale: _animation,
-            child: Image.asset('assets/icon/icon.png', width: 150, height: 150),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/icon/icon.png',
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
         ),
       ),

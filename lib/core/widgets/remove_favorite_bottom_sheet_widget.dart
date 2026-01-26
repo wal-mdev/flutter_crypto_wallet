@@ -26,8 +26,8 @@ class RemoveFavoriteBottomSheetWidget {
       ),
       secondaryButton: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: Colors.grey),
-          foregroundColor: Colors.grey[700],
+          side: BorderSide(color: Theme.of(context).colorScheme.outline),
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
         ),
         onPressed: () => Navigator.pop(context),
         child: const Text('Cancelar'),
