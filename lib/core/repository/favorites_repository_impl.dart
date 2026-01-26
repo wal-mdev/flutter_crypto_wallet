@@ -1,4 +1,4 @@
-import 'package:flutter_crypto_wallet/core/model/coin_model.dart';
+import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
 import 'package:flutter_crypto_wallet/core/repository/favorites_repository.dart';
 import 'package:flutter_crypto_wallet/core/service/storage_service.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
@@ -11,10 +11,12 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     : _storage = storage;
 
   @override
-  Future<Result<List<CoinModel>, Exception>> getAll() async {
+  Future<Result<List<CoinMarketModel>, Exception>> getAll() async {
     try {
       final maps = await _storage.getAll<Map<dynamic, dynamic>>(_boxName);
-      final list = maps.map((m) => CoinModel.fromJson(m)).toList();
+      final list = maps
+          .map((m) => CoinMarketModel.fromJson(Map<String, dynamic>.from(m)))
+          .toList();
       return Success(list);
     } catch (e) {
       return Error(Exception('Erro ao buscar favoritos: $e'));
@@ -22,9 +24,9 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   }
 
   @override
-  Future<Result<void, Exception>> add(CoinModel coin) async {
+  Future<Result<void, Exception>> add(CoinMarketModel coin) async {
     try {
-      await _storage.save(_boxName, coin.symbol, coin.toJson());
+      await _storage.save(_boxName, coin.id, coin.toJson());
       return Success(null);
     } catch (e) {
       return Error(Exception('Erro ao adicionar favorito: $e'));
@@ -32,9 +34,9 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   }
 
   @override
-  Future<Result<void, Exception>> remove(CoinModel coin) async {
+  Future<Result<void, Exception>> remove(CoinMarketModel coin) async {
     try {
-      await _storage.delete(_boxName, coin.symbol);
+      await _storage.delete(_boxName, coin.id);
       return Success(null);
     } catch (e) {
       return Error(Exception('Erro ao remover favorito: $e'));

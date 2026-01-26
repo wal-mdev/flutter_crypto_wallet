@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/command.dart';
-import 'package:flutter_crypto_wallet/core/result.dart';
+import 'package:flutter_crypto_wallet/core/utils/command.dart';
+import 'package:flutter_crypto_wallet/core/utils/result.dart';
 
 typedef CommandSuccessBuilder<TSuccess> =
     Widget Function(BuildContext context, TSuccess data);
