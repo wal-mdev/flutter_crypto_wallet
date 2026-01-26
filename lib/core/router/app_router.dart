@@ -1,4 +1,4 @@
-import 'package:flutter_crypto_wallet/core/model/coin_model.dart';
+import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
 import 'package:flutter_crypto_wallet/core/router/routes.dart';
 import 'package:flutter_crypto_wallet/core/router/shell_router/shell_router.dart';
 import 'package:flutter_crypto_wallet/core/router/shell_router/shell_router_list.dart';
@@ -6,8 +6,11 @@ import 'package:flutter_crypto_wallet/features/details/view/details_view.dart';
 import 'package:flutter_crypto_wallet/features/favorites/view/favorites_view.dart';
 import 'package:flutter_crypto_wallet/features/home/view/home_view.dart';
 import 'package:flutter_crypto_wallet/core/di/injection.dart';
-import 'package:flutter_crypto_wallet/features/home/repository/coin_repository.dart';
+import 'package:flutter_crypto_wallet/core/repository/coin_gecko_repository.dart';
 import 'package:flutter_crypto_wallet/features/home/view_model/home_view_model.dart';
+import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
+import 'package:flutter_crypto_wallet/core/provider/favorites_provider.dart';
+import 'package:flutter_crypto_wallet/features/favorites/view_model/favorites_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -15,35 +18,60 @@ class AppRouter {
   static GoRouter create() {
     return GoRouter(
       routes: [
-        ShellRoute(
-          builder: (context, state, child) {
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) {
             return ShellRouter(
               routes: ShellRouterList.routerList,
-              child: child,
+              navigationShell: navigationShell,
             );
           },
-          routes: [
-            GoRoute(
-              path: Routes.home,
-              builder: (context, state) {
-                return ChangeNotifierProvider(
-                  create: (_) =>
-                      HomeViewModel(coinRepository: getIt<CoinRepository>()),
-                  child: const HomeView(),
-                );
-              },
+          branches: [
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.home,
+                  builder: (context, state) {
+                    return ChangeNotifierProvider(
+                      create: (_) => HomeViewModel(
+                        repository: getIt<CoinGeckoRepository>(),
+                        favoritesProvider: getIt<FavoritesProvider>(),
+                      ),
+                      child: const HomeView(),
+                    );
+                  },
+                ),
+              ],
             ),
-            GoRoute(
-              path: Routes.favorites,
-              builder: (context, state) => const FavoritesView(),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.favorites,
+                  builder: (context, state) {
+                    return ChangeNotifierProvider(
+                      create: (_) => FavoritesViewModel(
+                        favoritesProvider: getIt<FavoritesProvider>(),
+                      ),
+                      child: const FavoritesView(),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
         GoRoute(
           path: Routes.details,
           builder: (context, state) {
-            final coinModel = state.extra as CoinModel;
-            return DetailsView(coinModel: coinModel);
+            final coinModel = state.extra as CoinMarketModel;
+            return ChangeNotifierProvider(
+              create: (_) => DetailsViewModel(
+                repository: getIt<CoinGeckoRepository>(),
+                favoritesProvider: getIt<FavoritesProvider>(),
+                coinId: coinModel.id,
+                coinModel: coinModel,
+              ),
+              child: DetailsView(coinModel: coinModel),
+            );
           },
         ),
       ],

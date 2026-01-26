@@ -3,35 +3,49 @@ import 'package:flutter_crypto_wallet/core/router/shell_router/shell_router_mode
 import 'package:go_router/go_router.dart';
 
 class ShellRouter extends StatelessWidget {
-  const ShellRouter({required this.child, required this.routes, super.key});
+  const ShellRouter({
+    required this.navigationShell,
+    required this.routes,
+    super.key,
+  });
 
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
   final List<ShellRouterModel> routes;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex(context),
-        onTap: (value) => _onTap(context, value),
-        items: List.generate(
-          routes.length,
-          (index) => BottomNavigationBarItem(
-            icon: Icon(routes[index].routerIcon),
-            label: routes[index].routerTitle,
+      body: navigationShell,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
+          currentIndex: navigationShell.currentIndex,
+          onTap: (index) => _onTap(index),
+          items: List.generate(
+            routes.length,
+            (index) => BottomNavigationBarItem(
+              icon: Icon(routes[index].routerIcon),
+              label: routes[index].routerTitle,
+            ),
           ),
         ),
       ),
     );
   }
 
-  int _currentIndex(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    return routes.indexWhere((route) => route.routerPath == location);
-  }
-
-  void _onTap(BuildContext context, int index) {
-    context.go(routes.elementAt(index).routerPath);
+  void _onTap(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 }
