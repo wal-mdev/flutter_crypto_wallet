@@ -31,7 +31,7 @@ O projeto foi construído seguindo princípios sólidos de arquitetura de softwa
 
 1.  Certifique-se de ter o Flutter instalado (`flutter doctor`).
 2.  Clone o repositório.
-3.  Crie um arquivo `.env` na raiz (se necessário para chaves de API).
+3.  Crie um arquivo `.env` na raiz com os dados necessários da API.
 4.  Execute:
     ```bash
     flutter pub get
