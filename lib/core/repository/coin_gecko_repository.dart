@@ -61,16 +61,20 @@ class CoinGeckoRepository {
 
         return Success(coins);
       } else if (response.statusCode == 429) {
-        return Error(Exception('Rate limit exceeded. Please try again later.'));
+        return Error(
+          Exception(
+            'Limite de requisições excedido. Tente novamente em breve.',
+          ),
+        );
       } else {
         return Error(
           Exception(
-            'API Error (${response.statusCode}): ${response.reasonPhrase}',
+            'Erro na API (${response.statusCode}): ${response.reasonPhrase}',
           ),
         );
       }
     } catch (e) {
-      return Error(Exception('Connection failed: $e'));
+      return Error(Exception('Falha na conexão: $e'));
     }
   }
 
@@ -127,9 +131,9 @@ class CoinGeckoRepository {
           );
         }
       }
-      return Error(Exception('Global search failed'));
+      return Error(Exception('Falha na busca remota'));
     } catch (e) {
-      return Error(Exception('Error searching coins: $e'));
+      return Error(Exception('Erro ao buscar moedas: $e'));
     }
   }
 
@@ -151,11 +155,11 @@ class CoinGeckoRepository {
         return Success(CoinDetailModel.fromJson(data));
       } else {
         return Error(
-          Exception('Error fetching details (${response.statusCode})'),
+          Exception('Erro ao buscar detalhes (${response.statusCode})'),
         );
       }
     } catch (e) {
-      return Error(Exception('Failed to load details: $e'));
+      return Error(Exception('Falha ao carregar detalhes: $e'));
     }
   }
 
@@ -177,11 +181,11 @@ class CoinGeckoRepository {
         return Success(chartData.prices);
       } else {
         return Error(
-          Exception('Error fetching chart data (${response.statusCode})'),
+          Exception('Erro ao buscar dados do gráfico (${response.statusCode})'),
         );
       }
     } catch (e) {
-      return Error(Exception('Failed to load chart: $e'));
+      return Error(Exception('Falha ao carregar gráfico: $e'));
     }
   }
 }

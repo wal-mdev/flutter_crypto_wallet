@@ -41,13 +41,13 @@ class _HomeViewState extends State<HomeView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crypto Market'),
+        title: const Text('BrasilCard Cripto'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Center(
               child: Text(
-                'Next update in ${viewModel.formattedCountdown}',
+                'Próxima atualização em ${viewModel.formattedCountdown}',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -67,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
             ),
             child: SearchBar(
               controller: _searchController,
-              hintText: 'Search by name or symbol...',
+              hintText: 'Pesquisar pelo nome ou símbolo...',
               onChanged: viewModel.onSearchChanged,
               leading: const Padding(
                 padding: EdgeInsets.only(left: 12.0),
@@ -92,22 +92,41 @@ class _HomeViewState extends State<HomeView> {
               initialBuilder: (context) =>
                   const Center(child: CircularProgressIndicator()),
               emptyBuilder: (context) =>
-                  const Center(child: Text('No cryptocurrencies found')),
+                  const Center(child: Text('Nenhuma criptomoeda encontrada')),
               successBuilder: (context, coins) {
                 final displayCoins = viewModel.isSearching
                     ? coins
                     : viewModel.coins;
 
-                return CoinListWidget(
-                  coins: displayCoins,
-                  isFavorite: viewModel.isFavorite,
-                  onFavoriteTap: (coin) =>
-                      viewModel.toggleFavorite(context, coin),
-                  onTap: (coin) => context.push(Routes.details, extra: coin),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!viewModel.isSearching)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 32, left: 16, bottom: 16),
+                        child: Text(
+                          'Top 150 Market Cap',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: CoinListWidget(
+                        coins: displayCoins,
+                        isFavorite: viewModel.isFavorite,
+                        onFavoriteTap: (coin) =>
+                            viewModel.toggleFavorite(context, coin),
+                        onTap: (coin) =>
+                            context.push(Routes.details, extra: coin),
+                      ),
+                    ),
+                  ],
                 );
               },
               errorBuilder: (context, error) =>
-                  Center(child: Text('Error: ${error.toString()}')),
+                  Center(child: Text('Erro: ${error.toString()}')),
             ),
           ),
         ],

@@ -20,7 +20,7 @@ class ChartWidget extends StatelessWidget {
           if (prices.isEmpty) {
             return const Center(
               child: Text(
-                'No historical data available',
+                'Sem dados históricos',
                 style: TextStyle(color: Colors.white),
               ),
             );
@@ -59,7 +59,7 @@ class ChartWidget extends StatelessWidget {
         },
         errorBuilder: (context, error) => Center(
           child: Text(
-            'Error loading chart data',
+            'Erro ao carregar dados do gráfico',
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),

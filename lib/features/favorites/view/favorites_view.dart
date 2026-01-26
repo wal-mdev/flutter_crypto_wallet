@@ -20,10 +20,11 @@ class _FavoritesViewState extends State<FavoritesView> {
     final viewModel = context.watch<FavoritesViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Favorites')),
+      appBar: AppBar(title: const Text('Meus Favoritos')),
       body: CommandBuilderWidget<List<CoinMarketModel>, Exception>(
         command: viewModel.favoritesProvider.loadCommand,
-        emptyBuilder: (_) => const Center(child: Text('No favorite coins yet')),
+        emptyBuilder: (_) =>
+            const Center(child: Text('Você ainda não tem moedas favoritas')),
         successBuilder: (context, coins) {
           return CoinListWidget(
             coins: coins,
@@ -33,7 +34,7 @@ class _FavoritesViewState extends State<FavoritesView> {
           );
         },
         errorBuilder: (context, error) =>
-            Center(child: Text('Error loading favorites: $error')),
+            Center(child: Text('Erro ao carregar favoritos: $error')),
       ),
     );
   }

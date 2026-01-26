@@ -26,7 +26,7 @@ class LinkChipWidget extends StatelessWidget {
           final success = await viewModel.openExternalLink(url);
           if (!success && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Could not open the link')),
+              const SnackBar(content: Text('Não foi possível abrir o link')),
             );
           }
         },

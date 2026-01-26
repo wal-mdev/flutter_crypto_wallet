@@ -78,7 +78,6 @@ class HomeViewModel extends ChangeNotifier {
     final result = await _repository.getTopCoins(
       page: _currentPage,
       perPage: _pageSize,
-      forceRefresh: true,
     );
 
     if (result is Success<List<CoinMarketModel>, Exception>) {

@@ -84,7 +84,7 @@ class DetailsViewModel extends ChangeNotifier {
 
   String cleanDescription(String description) {
     if (description.isEmpty) {
-      return 'No description available for this cryptocurrency.';
+      return 'Nenhuma descrição disponível para esta criptomoeda.';
     }
 
     // Improved regex to remove HTML tags and entities more thoroughly
@@ -97,7 +97,7 @@ class DetailsViewModel extends ChangeNotifier {
         .trim();
 
     if (cleaned.isEmpty) {
-      return 'No description available for this cryptocurrency.';
+      return 'Nenhuma descrição disponível para esta criptomoeda.';
     }
 
     return cleaned;

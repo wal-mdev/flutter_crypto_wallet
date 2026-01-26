@@ -9,9 +9,9 @@ class RemoveFavoriteBottomSheetWidget {
   }) {
     return BottomSheetWidget.show(
       context: context,
-      title: const Text('Remove from Favorites?'),
+      title: const Text('Remover dos Favoritos?'),
       description: Text(
-        'Are you sure you want to remove $coinName from your favorites list?',
+        'Tem certeza que deseja remover $coinName da sua lista de favoritos?',
       ),
       primaryButton: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -22,11 +22,11 @@ class RemoveFavoriteBottomSheetWidget {
           onConfirm();
           Navigator.pop(context);
         },
-        child: const Text('Remove'),
+        child: const Text('Remover'),
       ),
       secondaryButton: TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('Cancel'),
+        child: const Text('Cancelar'),
       ),
     );
   }
