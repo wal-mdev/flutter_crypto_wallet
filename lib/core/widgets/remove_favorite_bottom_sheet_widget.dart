@@ -24,7 +24,11 @@ class RemoveFavoriteBottomSheetWidget {
         },
         child: const Text('Remover'),
       ),
-      secondaryButton: TextButton(
+      secondaryButton: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.grey),
+          foregroundColor: Colors.grey[700],
+        ),
         onPressed: () => Navigator.pop(context),
         child: const Text('Cancelar'),
       ),
