@@ -11,13 +11,20 @@ import 'package:flutter_crypto_wallet/features/home/view_model/home_view_model.d
 import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
 import 'package:flutter_crypto_wallet/core/provider/favorites_provider.dart';
 import 'package:flutter_crypto_wallet/features/favorites/view_model/favorites_view_model.dart';
+import 'package:flutter_crypto_wallet/features/splash/view/splash_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class AppRouter {
   static GoRouter create() {
     return GoRouter(
+      initialLocation: Routes.splash,
       routes: [
+        GoRoute(
+          path: Routes.splash,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SplashView()),
+        ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             return ShellRouter(
@@ -30,13 +37,15 @@ class AppRouter {
               routes: [
                 GoRoute(
                   path: Routes.home,
-                  builder: (context, state) {
-                    return ChangeNotifierProvider(
-                      create: (_) => HomeViewModel(
-                        repository: getIt<CoinGeckoRepository>(),
-                        favoritesProvider: getIt<FavoritesProvider>(),
+                  pageBuilder: (context, state) {
+                    return NoTransitionPage(
+                      child: ChangeNotifierProvider(
+                        create: (_) => HomeViewModel(
+                          repository: getIt<CoinGeckoRepository>(),
+                          favoritesProvider: getIt<FavoritesProvider>(),
+                        ),
+                        child: const HomeView(),
                       ),
-                      child: const HomeView(),
                     );
                   },
                 ),
