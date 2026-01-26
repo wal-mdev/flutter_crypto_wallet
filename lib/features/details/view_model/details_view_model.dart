@@ -86,7 +86,21 @@ class DetailsViewModel extends ChangeNotifier {
     if (description.isEmpty) {
       return 'No description available for this cryptocurrency.';
     }
-    return description;
+
+    // Improved regex to remove HTML tags and entities more thoroughly
+    final cleaned = description
+        .replaceAll(
+          RegExp(r'<[^>]*>|&[^;]+;'),
+          ' ',
+        ) // Replace tags/entities with space
+        .replaceAll(RegExp(r'\s+'), ' ') // Collapse multiple spaces/newlines
+        .trim();
+
+    if (cleaned.isEmpty) {
+      return 'No description available for this cryptocurrency.';
+    }
+
+    return cleaned;
   }
 
   List<FlSpot> getChartSpots(List<List<double>> prices) {
