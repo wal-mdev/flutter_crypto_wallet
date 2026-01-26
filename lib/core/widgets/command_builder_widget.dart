@@ -11,8 +11,8 @@ typedef CommandErrorBuilder<TError> =
 typedef CommandEmptyBuilder = Widget Function(BuildContext context);
 typedef CommandEmptyPredicate<TSuccess> = bool Function(TSuccess value);
 
-class AppCommandBuilder<TSuccess, TError> extends StatelessWidget {
-  const AppCommandBuilder({
+class CommandBuilderWidget<TSuccess, TError> extends StatelessWidget {
+  const CommandBuilderWidget({
     required this.command,
     required this.successBuilder,
     this.errorBuilder,

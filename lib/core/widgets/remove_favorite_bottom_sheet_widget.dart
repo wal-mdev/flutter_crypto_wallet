@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/widgets/app_bottom_sheet.dart';
+import 'package:flutter_crypto_wallet/core/widgets/bottom_sheet_widget.dart';
 
-class RemoveFavoriteBottomSheet {
+class RemoveFavoriteBottomSheetWidget {
   static Future<void> show({
     required BuildContext context,
     required String coinName,
     required VoidCallback onConfirm,
   }) {
-    return AppBottomSheet.show(
+    return BottomSheetWidget.show(
       context: context,
-      title: const Text('Remover dos Favoritos?'),
+      title: const Text('Remove from Favorites?'),
       description: Text(
-        'Tem certeza que deseja remover $coinName da sua lista de favoritos?',
+        'Are you sure you want to remove $coinName from your favorites list?',
       ),
       primaryButton: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -22,11 +22,11 @@ class RemoveFavoriteBottomSheet {
           onConfirm();
           Navigator.pop(context);
         },
-        child: const Text('Remover'),
+        child: const Text('Remove'),
       ),
       secondaryButton: TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('Cancelar'),
+        child: const Text('Cancel'),
       ),
     );
   }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AppBottomSheet extends StatelessWidget {
+class BottomSheetWidget extends StatelessWidget {
   final Widget title;
   final Widget description;
   final Widget primaryButton;
   final Widget? secondaryButton;
 
-  const AppBottomSheet({
+  const BottomSheetWidget({
     super.key,
     required this.title,
     required this.description,
@@ -25,7 +25,7 @@ class AppBottomSheet extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => AppBottomSheet(
+      builder: (context) => BottomSheetWidget(
         title: title,
         description: description,
         primaryButton: primaryButton,
