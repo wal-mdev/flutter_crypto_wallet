@@ -35,6 +35,14 @@ class CoinRemoteDataSourceImpl implements CoinRemoteDataSource {
         debugPrint(
           'Server Error: ${e.response?.statusCode} - ${e.response?.statusMessage}',
         );
+
+        if (e.response?.statusCode == 429) {
+          throw ServerFailure(
+            statusCode: 429,
+            message: 'Muitas requisições. Tente novamente em instantes.',
+          );
+        }
+
         throw ServerFailure(
           statusCode: e.response?.statusCode ?? 500,
           message: 'Erro no servidor. Tente novamente mais tarde.',

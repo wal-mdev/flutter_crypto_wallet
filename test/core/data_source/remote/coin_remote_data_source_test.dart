@@ -65,6 +65,42 @@ void main() {
       );
     });
 
+    test(
+      'getTopCoins throws ServerFailure with friendly message on 429 error',
+      () async {
+        when(
+          () => mockDio.get(
+            any(),
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: ''),
+            response: Response(
+              data: 'Too Many Requests',
+              statusCode: 429,
+              statusMessage: 'Too Many Requests',
+              requestOptions: RequestOptions(path: ''),
+            ),
+            type: DioExceptionType.badResponse,
+          ),
+        );
+
+        expect(
+          () => remoteDataSource.getTopCoins(),
+          throwsA(
+            isA<ServerFailure>()
+                .having((f) => f.statusCode, 'statusCode', 429)
+                .having(
+                  (f) => f.message,
+                  'message',
+                  'Muitas requisições. Tente novamente em instantes.',
+                ),
+          ),
+        );
+      },
+    );
+
     test('getTopCoins throws NetworkFailure on connection error', () async {
       when(
         () =>
