@@ -1,11 +1,13 @@
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/features/home/view_model/home_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import '../../../mocks.dart';
 
 void main() {
-  late MockCoinGeckoRepository mockRepository;
+  late MockCoinRepository mockRepository;
   late MockFavoritesProvider mockFavoritesProvider;
   late HomeViewModel viewModel;
 
@@ -14,7 +16,7 @@ void main() {
   });
 
   setUp(() {
-    mockRepository = MockCoinGeckoRepository();
+    mockRepository = MockCoinRepository();
     mockFavoritesProvider = MockFavoritesProvider();
 
     when(
@@ -22,10 +24,15 @@ void main() {
         page: any(named: 'page'),
         perPage: any(named: 'perPage'),
       ),
-    ).thenAnswer((_) async => Success([]));
+    ).thenAnswer((_) async => Success<List<Coin>, Failure>([]));
 
-    when(() => mockFavoritesProvider.addListener(any())).thenReturn(null);
-    when(() => mockFavoritesProvider.removeListener(any())).thenReturn(null);
+    when(
+      () => mockRepository.watchTopCoins(),
+    ).thenAnswer((_) => const Stream.empty());
+
+    when(
+      () => mockFavoritesProvider.favoritesStream,
+    ).thenAnswer((_) => const Stream.empty());
 
     viewModel = HomeViewModel(
       repository: mockRepository,
@@ -60,7 +67,7 @@ void main() {
 
         when(
           () => mockRepository.getTopCoins(page: 1, perPage: 150),
-        ).thenAnswer((_) async => Success(mockCoins));
+        ).thenAnswer((_) async => Success<List<Coin>, Failure>(mockCoins));
 
         await viewModel.loadCoinsCommand.execute(true);
 
