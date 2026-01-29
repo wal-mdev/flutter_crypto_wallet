@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crypto_wallet/core/utils/command.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
+import 'package:flutter_crypto_wallet/core/widgets/app_error_widget.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 
 typedef CommandSuccessBuilder<TSuccess> =
     Widget Function(BuildContext context, TSuccess data);
@@ -18,6 +20,7 @@ class CommandBuilderWidget<TSuccess, TError> extends StatelessWidget {
     this.errorBuilder,
     this.emptyBuilder,
     this.initialBuilder,
+    this.onRetry,
     super.key,
   });
 
@@ -26,6 +29,7 @@ class CommandBuilderWidget<TSuccess, TError> extends StatelessWidget {
   final CommandErrorBuilder<TError>? errorBuilder;
   final CommandEmptyBuilder? emptyBuilder;
   final WidgetBuilder? initialBuilder;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +60,19 @@ class CommandBuilderWidget<TSuccess, TError> extends StatelessWidget {
           if (errorBuilder != null) {
             return errorBuilder!(context, result.failure);
           }
+
+          final failure = result.failure;
+          if (failure is Failure) {
+            return AppErrorWidget(
+              failure: failure,
+              onRetry:
+                  onRetry ??
+                  (command is Command0
+                      ? () => (command as Command0).execute()
+                      : null),
+            );
+          }
+
           return const SizedBox.shrink();
         }
 

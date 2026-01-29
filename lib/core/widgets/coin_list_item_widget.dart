@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_presentation.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin_presentation.dart';
 import 'package:flutter_crypto_wallet/core/widgets/favorite_button_widget.dart';
 
 class CoinListItemWidget extends StatelessWidget {
-  final CoinMarketModel coin;
+  final Coin coin;
   final bool isFavorite;
   final VoidCallback onFavoriteTap;
   final VoidCallback onTap;

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_detail_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin_detail.dart';
 import 'package:flutter_crypto_wallet/core/widgets/command_builder_widget.dart';
 import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
 import 'package:flutter_crypto_wallet/features/details/widgets/link_chip_widget.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 
 class AboutWidget extends StatelessWidget {
   const AboutWidget({required this.viewModel, super.key});
@@ -11,8 +12,9 @@ class AboutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommandBuilderWidget<CoinDetailModel, Exception>(
+    return CommandBuilderWidget<CoinDetail, Failure>(
       command: viewModel.loadDetailsCommand,
+      onRetry: () => viewModel.loadDetailsCommand.execute(),
       initialBuilder: (_) => const SizedBox.shrink(),
       successBuilder: (context, details) {
         final description = viewModel.cleanDescription(details.description);
