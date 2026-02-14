@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/router/routes.dart';
 import 'package:flutter_crypto_wallet/core/widgets/coin_list_widget.dart';
 import 'package:flutter_crypto_wallet/core/widgets/command_builder_widget.dart';
 import 'package:flutter_crypto_wallet/features/home/view_model/home_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -88,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Expanded(
-            child: CommandBuilderWidget<List<CoinMarketModel>, Exception>(
+            child: CommandBuilderWidget<List<Coin>, Failure>(
               command: viewModel.activeCommand,
               initialBuilder: (context) =>
                   const Center(child: CircularProgressIndicator()),
@@ -126,8 +127,7 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 );
               },
-              errorBuilder: (context, error) =>
-                  Center(child: Text('Erro: ${error.toString()}')),
+              onRetry: () => viewModel.loadCoinsCommand.execute(true),
             ),
           ),
         ],

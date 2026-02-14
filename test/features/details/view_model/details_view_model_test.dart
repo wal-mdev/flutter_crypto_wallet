@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_detail_model.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin_detail.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/utils/command.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
 import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 import '../../../mocks.dart';
 
 class MockCommand1<T, E, P> extends Mock implements Command1<T, E, P> {}
@@ -13,7 +14,7 @@ class MockCommand1<T, E, P> extends Mock implements Command1<T, E, P> {}
 class MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
-  late MockCoinGeckoRepository mockRepository;
+  late MockCoinRepository mockRepository;
   late MockFavoritesProvider mockFavoritesProvider;
   late DetailsViewModel viewModel;
   final mockCoin = createMockCoin(id: 'bitcoin', name: 'Bitcoin');
@@ -23,12 +24,12 @@ void main() {
   });
 
   setUp(() {
-    mockRepository = MockCoinGeckoRepository();
+    mockRepository = MockCoinRepository();
     mockFavoritesProvider = MockFavoritesProvider();
 
     when(() => mockRepository.getCoinDetails(any())).thenAnswer(
       (_) async => Success(
-        CoinDetailModel(
+        const CoinDetail(
           id: 'bitcoin',
           symbol: 'BTC',
           name: 'Bitcoin',
@@ -43,8 +44,9 @@ void main() {
       ]),
     );
 
-    when(() => mockFavoritesProvider.addListener(any())).thenReturn(null);
-    when(() => mockFavoritesProvider.removeListener(any())).thenReturn(null);
+    when(
+      () => mockFavoritesProvider.favoritesStream,
+    ).thenAnswer((_) => const Stream.empty());
     when(() => mockFavoritesProvider.isFavorite(any())).thenReturn(false);
 
     viewModel = DetailsViewModel(
@@ -58,7 +60,7 @@ void main() {
   group('DetailsViewModel Tests', () {
     test('initial execution loads details and chart', () {
       verify(() => mockRepository.getCoinDetails('bitcoin')).called(1);
-      verify(() => mockRepository.getCoinChartData('bitcoin', '7')).called(1);
+      verify(() => mockRepository.getCoinChartData('bitcoin', '1')).called(1);
     });
 
     test('cleanDescription removes HTML tags and collapses whitespace', () {
@@ -80,7 +82,7 @@ void main() {
     });
 
     test('toggleFavorite delegates to FavoritesProvider', () async {
-      final mockCommand = MockCommand1<void, Exception, CoinMarketModel>();
+      final mockCommand = MockCommand1<void, Failure, Coin>();
       when(() => mockFavoritesProvider.toggleCommand).thenReturn(mockCommand);
       when(
         () => mockCommand.execute(any()),

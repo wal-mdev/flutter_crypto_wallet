@@ -1,5 +1,7 @@
 import 'package:flutter_crypto_wallet/core/provider/favorites_provider.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import '../../mocks.dart';
@@ -10,7 +12,9 @@ void main() {
 
   setUp(() {
     mockRepository = MockFavoritesRepository();
-    when(() => mockRepository.getAll()).thenAnswer((_) async => Success([]));
+    when(
+      () => mockRepository.getAll(),
+    ).thenAnswer((_) async => Success<List<Coin>, Failure>([]));
     provider = FavoritesProvider(repository: mockRepository);
   });
 
@@ -36,10 +40,10 @@ void main() {
 
       when(
         () => mockRepository.add(coin),
-      ).thenAnswer((_) async => Success(null));
+      ).thenAnswer((_) async => Success<void, Failure>(null));
       when(
         () => mockRepository.getAll(),
-      ).thenAnswer((_) async => Success([coin]));
+      ).thenAnswer((_) async => Success<List<Coin>, Failure>([coin]));
 
       await provider.toggleCommand.execute(coin);
 
@@ -56,8 +60,10 @@ void main() {
 
       when(
         () => mockRepository.remove(coin),
-      ).thenAnswer((_) async => Success(null));
-      when(() => mockRepository.getAll()).thenAnswer((_) async => Success([]));
+      ).thenAnswer((_) async => Success<void, Failure>(null));
+      when(
+        () => mockRepository.getAll(),
+      ).thenAnswer((_) async => Success<List<Coin>, Failure>([]));
 
       await provider.toggleCommand.execute(coin);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/widgets/coin_list_item_widget.dart';
 
 class CoinListWidget extends StatelessWidget {
@@ -12,10 +12,10 @@ class CoinListWidget extends StatelessWidget {
     super.key,
   });
 
-  final List<CoinMarketModel> coins;
-  final bool Function(CoinMarketModel) isFavorite;
-  final void Function(CoinMarketModel) onFavoriteTap;
-  final void Function(CoinMarketModel) onTap;
+  final List<Coin> coins;
+  final bool Function(Coin) isFavorite;
+  final void Function(Coin) onFavoriteTap;
+  final void Function(Coin) onTap;
   final EdgeInsetsGeometry padding;
 
   @override

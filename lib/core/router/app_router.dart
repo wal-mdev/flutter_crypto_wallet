@@ -1,4 +1,4 @@
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/router/routes.dart';
 import 'package:flutter_crypto_wallet/core/router/shell_router/shell_router.dart';
 import 'package:flutter_crypto_wallet/core/router/shell_router/shell_router_list.dart';
@@ -6,10 +6,8 @@ import 'package:flutter_crypto_wallet/features/details/view/details_view.dart';
 import 'package:flutter_crypto_wallet/features/favorites/view/favorites_view.dart';
 import 'package:flutter_crypto_wallet/features/home/view/home_view.dart';
 import 'package:flutter_crypto_wallet/core/di/injection.dart';
-import 'package:flutter_crypto_wallet/core/repository/coin_gecko_repository.dart';
 import 'package:flutter_crypto_wallet/features/home/view_model/home_view_model.dart';
 import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
-import 'package:flutter_crypto_wallet/core/provider/favorites_provider.dart';
 import 'package:flutter_crypto_wallet/features/favorites/view_model/favorites_view_model.dart';
 import 'package:flutter_crypto_wallet/features/splash/view/splash_view.dart';
 import 'package:go_router/go_router.dart';
@@ -40,10 +38,7 @@ class AppRouter {
                   pageBuilder: (context, state) {
                     return NoTransitionPage(
                       child: ChangeNotifierProvider(
-                        create: (_) => HomeViewModel(
-                          repository: getIt<CoinGeckoRepository>(),
-                          favoritesProvider: getIt<FavoritesProvider>(),
-                        ),
+                        create: (_) => getIt<HomeViewModel>(),
                         child: const HomeView(),
                       ),
                     );
@@ -57,9 +52,7 @@ class AppRouter {
                   path: Routes.favorites,
                   builder: (context, state) {
                     return ChangeNotifierProvider(
-                      create: (_) => FavoritesViewModel(
-                        favoritesProvider: getIt<FavoritesProvider>(),
-                      ),
+                      create: (_) => getIt<FavoritesViewModel>(),
                       child: const FavoritesView(),
                     );
                   },
@@ -71,15 +64,10 @@ class AppRouter {
         GoRoute(
           path: Routes.details,
           builder: (context, state) {
-            final coinModel = state.extra as CoinMarketModel;
+            final coin = state.extra as Coin;
             return ChangeNotifierProvider(
-              create: (_) => DetailsViewModel(
-                repository: getIt<CoinGeckoRepository>(),
-                favoritesProvider: getIt<FavoritesProvider>(),
-                coinId: coinModel.id,
-                coinModel: coinModel,
-              ),
-              child: DetailsView(coinModel: coinModel),
+              create: (_) => getIt<DetailsViewModel>(param1: coin),
+              child: DetailsView(coin: coin),
             );
           },
         ),

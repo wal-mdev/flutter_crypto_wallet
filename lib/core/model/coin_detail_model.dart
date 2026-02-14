@@ -1,3 +1,5 @@
+import 'package:flutter_crypto_wallet/core/domain/entity/coin_detail.dart';
+
 class CoinDetailModel {
   final String id;
   final String symbol;
@@ -37,6 +39,18 @@ class CoinDetailModel {
       id: json['id'] as String,
       symbol: (json['symbol'] as String).toUpperCase(),
       name: json['name'] as String,
+      description: description,
+      homepage: homepage,
+      github: github,
+      whitepaper: whitepaper,
+    );
+  }
+
+  CoinDetail toEntity() {
+    return CoinDetail(
+      id: id,
+      symbol: symbol,
+      name: name,
       description: description,
       homepage: homepage,
       github: github,

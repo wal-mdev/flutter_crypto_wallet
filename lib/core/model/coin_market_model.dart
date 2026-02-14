@@ -1,3 +1,5 @@
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
+
 class CoinMarketModel {
   final String id;
   final String symbol;
@@ -8,6 +10,7 @@ class CoinMarketModel {
   final int marketCapRank;
   final double? priceChangePercentage24h;
   final double? priceChangePercentage7d;
+  final double? priceChangePercentage14d;
   final double? priceChangePercentage30d;
   final double? fullyDilutedValuation;
   final List<double> sparkline;
@@ -22,6 +25,7 @@ class CoinMarketModel {
     required this.marketCapRank,
     this.priceChangePercentage24h,
     this.priceChangePercentage7d,
+    this.priceChangePercentage14d,
     this.priceChangePercentage30d,
     this.fullyDilutedValuation,
     required this.sparkline,
@@ -44,10 +48,12 @@ class CoinMarketModel {
       marketCapRank: (json['market_cap_rank'] as num?)?.toInt() ?? 0,
       priceChangePercentage24h: (json['price_change_percentage_24h'] as num?)
           ?.toDouble(),
-      priceChangePercentage7d: (json['price_change_percentage_7d'] as num?)
-          ?.toDouble(),
-      priceChangePercentage30d: (json['price_change_percentage_30d'] as num?)
-          ?.toDouble(),
+      priceChangePercentage7d:
+          (json['price_change_percentage_7d_in_currency'] as num?)?.toDouble(),
+      priceChangePercentage14d:
+          (json['price_change_percentage_14d_in_currency'] as num?)?.toDouble(),
+      priceChangePercentage30d:
+          (json['price_change_percentage_30d_in_currency'] as num?)?.toDouble(),
       fullyDilutedValuation: (json['fully_diluted_valuation'] as num?)
           ?.toDouble(),
       sparkline: sparklineData,
@@ -64,10 +70,29 @@ class CoinMarketModel {
       'market_cap': marketCap,
       'market_cap_rank': marketCapRank,
       'price_change_percentage_24h': priceChangePercentage24h,
-      'price_change_percentage_7d': priceChangePercentage7d,
-      'price_change_percentage_30d': priceChangePercentage30d,
+      'price_change_percentage_7d_in_currency': priceChangePercentage7d,
+      'price_change_percentage_14d_in_currency': priceChangePercentage14d,
+      'price_change_percentage_30d_in_currency': priceChangePercentage30d,
       'fully_diluted_valuation': fullyDilutedValuation,
       'sparkline_in_7d': {'price': sparkline},
     };
+  }
+
+  Coin toEntity() {
+    return Coin(
+      id: id,
+      symbol: symbol,
+      name: name,
+      image: image,
+      currentPrice: currentPrice,
+      marketCap: marketCap,
+      marketCapRank: marketCapRank,
+      priceChangePercentage24h: priceChangePercentage24h,
+      priceChangePercentage7d: priceChangePercentage7d,
+      priceChangePercentage14d: priceChangePercentage14d,
+      priceChangePercentage30d: priceChangePercentage30d,
+      fullyDilutedValuation: fullyDilutedValuation,
+      sparkline: sparkline,
+    );
   }
 }

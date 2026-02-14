@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_presentation.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin_presentation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../mocks.dart';
 

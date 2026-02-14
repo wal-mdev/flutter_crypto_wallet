@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'dart:async';
+
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/repository/favorites_repository.dart';
 import 'package:flutter_crypto_wallet/core/utils/command.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 
-class FavoritesProvider extends ChangeNotifier {
+class FavoritesProvider {
   final FavoritesRepository _repository;
 
   FavoritesProvider({required FavoritesRepository repository})
@@ -15,30 +17,33 @@ class FavoritesProvider extends ChangeNotifier {
     loadCommand.execute();
   }
 
-  late final Command0<List<CoinMarketModel>, Exception> loadCommand;
-  late final Command1<void, Exception, CoinMarketModel> toggleCommand;
+  late final Command0<List<Coin>, Failure> loadCommand;
+  late final Command1<void, Failure, Coin> toggleCommand;
 
-  List<CoinMarketModel> _favorites = [];
-  List<CoinMarketModel> get favorites => _favorites;
+  final _favoritesStreamController = StreamController<List<Coin>>.broadcast();
+  Stream<List<Coin>> get favoritesStream => _favoritesStreamController.stream;
 
-  bool isFavorite(CoinMarketModel coin) {
+  List<Coin> _favorites = [];
+  List<Coin> get favorites => _favorites;
+
+  bool isFavorite(Coin coin) {
     return _favorites.any((f) => f.id == coin.id);
   }
 
-  Future<Result<List<CoinMarketModel>, Exception>> _loadFavorites() async {
+  Future<Result<List<Coin>, Failure>> _loadFavorites() async {
     final result = await _repository.getAll();
 
-    if (result is Success<List<CoinMarketModel>, Exception>) {
+    if (result is Success<List<Coin>, Failure>) {
       _favorites = result.value;
-      notifyListeners();
+      _favoritesStreamController.add(_favorites);
     }
 
     return result;
   }
 
-  Future<Result<void, Exception>> _toggleFavorite(CoinMarketModel coin) async {
+  Future<Result<void, Failure>> _toggleFavorite(Coin coin) async {
     final exists = isFavorite(coin);
-    final Result<void, Exception> result;
+    final Result<void, Failure> result;
 
     if (exists) {
       result = await _repository.remove(coin);
@@ -46,10 +51,14 @@ class FavoritesProvider extends ChangeNotifier {
       result = await _repository.add(coin);
     }
 
-    if (result is Success<void, Exception>) {
+    if (result is Success<void, Failure>) {
       await loadCommand.execute();
     }
 
     return result;
+  }
+
+  void dispose() {
+    _favoritesStreamController.close();
   }
 }

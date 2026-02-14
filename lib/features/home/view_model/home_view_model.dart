@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_crypto_wallet/core/utils/command.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/provider/favorites_provider.dart';
-import 'package:flutter_crypto_wallet/core/repository/coin_gecko_repository.dart';
+import 'package:flutter_crypto_wallet/core/domain/repository/coin_repository.dart';
 import 'package:flutter_crypto_wallet/core/utils/result.dart';
 import 'package:flutter_crypto_wallet/core/widgets/remove_favorite_bottom_sheet_widget.dart';
+import 'package:flutter_crypto_wallet/core/error/failure.dart';
 
 class HomeViewModel extends ChangeNotifier {
-  final CoinGeckoRepository _repository;
+  final CoinRepository _repository;
   final FavoritesProvider _favoritesProvider;
   Timer? _debounce;
   Timer? _autoRefreshTimer;
+  StreamSubscription? _favoritesSubscription;
+  StreamSubscription? _coinsSubscription;
 
   static const _cooldownDuration = Duration(minutes: 3);
   DateTime? _lastRefreshTime;
@@ -19,7 +22,7 @@ class HomeViewModel extends ChangeNotifier {
   late int _countdown = _cooldownDuration.inSeconds;
   int get countdown => _countdown;
 
-  bool isFavorite(CoinMarketModel coin) => _favoritesProvider.isFavorite(coin);
+  bool isFavorite(Coin coin) => _favoritesProvider.isFavorite(coin);
 
   String get formattedCountdown {
     final minutes = _countdown ~/ 60;
@@ -28,15 +31,26 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   HomeViewModel({
-    required CoinGeckoRepository repository,
+    required CoinRepository repository,
     required FavoritesProvider favoritesProvider,
   }) : _repository = repository,
        _favoritesProvider = favoritesProvider {
     loadCoinsCommand = Command1(_loadInitialCoins);
     searchCommand = Command1(_repository.searchCoins);
 
-    // Listen to favorite changes to update the list instantly
-    _favoritesProvider.addListener(notifyListeners);
+    // 1. Listen to Local Coins Stream (Offline-First)
+    _coinsSubscription = _repository.watchTopCoins().listen((cachedCoins) {
+      if (cachedCoins != null) {
+        _coins.clear();
+        _coins.addAll(cachedCoins);
+        notifyListeners();
+      }
+    });
+
+    // 2. Listen to favorite changes using Streams
+    _favoritesSubscription = _favoritesProvider.favoritesStream.listen((_) {
+      notifyListeners();
+    });
 
     _startCountdownTimer();
   }
@@ -46,24 +60,22 @@ class HomeViewModel extends ChangeNotifier {
 
   bool get isSearching => _searchQuery.length >= 3;
 
-  Command<List<CoinMarketModel>, Exception> get activeCommand =>
+  Command<List<Coin>, Failure> get activeCommand =>
       isSearching ? searchCommand : loadCoinsCommand;
 
-  late final Command1<List<CoinMarketModel>, Exception, bool> loadCoinsCommand;
-  late final Command1<List<CoinMarketModel>, Exception, String> searchCommand;
+  late final Command1<List<Coin>, Failure, bool> loadCoinsCommand;
+  late final Command1<List<Coin>, Failure, String> searchCommand;
 
   bool _lastTriggerWasManual = false;
   bool get lastTriggerWasManual => _lastTriggerWasManual;
 
-  final List<CoinMarketModel> _coins = [];
-  List<CoinMarketModel> get coins => List.unmodifiable(_coins);
+  final List<Coin> _coins = [];
+  List<Coin> get coins => List.unmodifiable(_coins);
 
   int _currentPage = 1;
   static const int _pageSize = 150;
 
-  Future<Result<List<CoinMarketModel>, Exception>> _loadInitialCoins(
-    bool isManual,
-  ) async {
+  Future<Result<List<Coin>, Failure>> _loadInitialCoins(bool isManual) async {
     final now = DateTime.now();
     _lastTriggerWasManual = isManual;
 
@@ -80,7 +92,7 @@ class HomeViewModel extends ChangeNotifier {
       perPage: _pageSize,
     );
 
-    if (result is Success<List<CoinMarketModel>, Exception>) {
+    if (result is Success<List<Coin>, Failure>) {
       _coins.clear();
       _coins.addAll(result.value);
       _lastRefreshTime = now;
@@ -126,7 +138,7 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavorite(BuildContext context, CoinMarketModel coin) {
+  void toggleFavorite(BuildContext context, Coin coin) {
     if (isFavorite(coin)) {
       RemoveFavoriteBottomSheetWidget.show(
         context: context,
@@ -142,7 +154,8 @@ class HomeViewModel extends ChangeNotifier {
   void dispose() {
     _debounce?.cancel();
     _autoRefreshTimer?.cancel();
-    _favoritesProvider.removeListener(notifyListeners);
+    _favoritesSubscription?.cancel();
+    _coinsSubscription?.cancel();
     super.dispose();
   }
 }

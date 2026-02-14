@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_wallet/core/model/coin_market_model.dart';
+import 'package:flutter_crypto_wallet/core/domain/entity/coin.dart';
 import 'package:flutter_crypto_wallet/core/widgets/favorite_button_widget.dart';
 import 'package:flutter_crypto_wallet/features/details/view_model/details_view_model.dart';
 import 'package:flutter_crypto_wallet/features/details/widgets/about_widget.dart';
@@ -9,9 +9,9 @@ import 'package:flutter_crypto_wallet/features/details/widgets/period_selector_w
 import 'package:provider/provider.dart';
 
 class DetailsView extends StatelessWidget {
-  const DetailsView({required this.coinModel, super.key});
+  const DetailsView({required this.coin, super.key});
 
-  final CoinMarketModel coinModel;
+  final Coin coin;
 
   @override
   Widget build(BuildContext context) {

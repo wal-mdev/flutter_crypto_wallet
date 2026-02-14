@@ -13,7 +13,7 @@ void main() async {
   final router = AppRouter.create();
 
   runApp(
-    ChangeNotifierProvider.value(
+    Provider.value(
       value: getIt<FavoritesProvider>(),
       child: CryptoWalletApp(routerConfig: router),
     ),

@@ -14,6 +14,12 @@ class HiveStorageServiceImpl implements StorageService {
   }
 
   @override
+  Future<T?> get<T>(String boxName, String key) async {
+    final box = await Hive.openBox(boxName);
+    return box.get(key) as T?;
+  }
+
+  @override
   Future<List<T>> getAll<T>(String boxName) async {
     final box = await Hive.openBox(boxName);
     return box.values.cast<T>().toList();
