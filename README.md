@@ -9,17 +9,6 @@ A modern cryptocurrency monitoring application developed in Flutter, integrating
 
 ---
 
-## 📸 Screenshots
-
-> **Note**: Add screenshots here to showcase your app's interface
-> - Light Mode / Dark Mode comparison
-> - Home screen with coin list
-> - Interactive charts
-> - Favorites management
-> - Search functionality
-
----
-
 ## ✨ Key Features
 
 - **Real-Time Data**: Complete integration with the **CoinGecko** API to list the Top 150 Market Cap.
